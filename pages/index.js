@@ -20,7 +20,7 @@ export const dummyData = [
 export default function HomePage(props) {
     console.log(props.meetups);
   return (
-    <div className="w-screen h-auto">
+    <div className="">
       <MeetupList meetups={props.meetups} />
     </div>
   );
