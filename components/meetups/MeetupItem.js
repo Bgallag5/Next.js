@@ -12,7 +12,7 @@ function MeetupItem(props) {
         console.log(props.id);
         //router.push - pushes additional params onto our current url 
         // ourdomain.com, router.push(`/meetups/${props.id}`) => ourdomain.com/meetups/${id}
-        router.push(`/meetups/${props.id}`);
+        router.push(`/${props.id}`);
     }
 
   return (
