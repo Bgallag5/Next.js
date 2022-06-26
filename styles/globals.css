@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 html,
 body {
   padding: 0;
@@ -13,4 +18,20 @@ a {
 
 * {
   box-sizing: border-box;
+  /* outline: 1px solid rgba(green, .2) !important; */
+}
+
+@layer base{
+  .btn{
+    @apply bg-emerald-200 h-12 flex justify-center items-center border-none p-3 shadow-lg rounded font-bold active:translate-y-[1px] hover:bg-emerald-300;
+  }
+  .label{
+    @apply font-bold;
+  }
+  .input{
+    @apply border border-solid border-black outline-none rounded shadow-sm p-1; 
+  }
+  .section{
+    @apply w-full h-full bg-green-200 flex flex-col items-center text-center;
+  }
 }
