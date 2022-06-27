@@ -2,7 +2,13 @@ import React from "react";
 import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 import axios from "axios";
 
+import Router, { useRouter } from "next/router";
+
 export default function NewMeetup() {
+
+
+  const router = useRouter();
+
   const handleAddMeetup = async (data) => {
     console.log(data);
 
@@ -10,15 +16,19 @@ export default function NewMeetup() {
       const response = await axios({
         method: 'POST',
         url: '/api/new-meetup',
-        // data: JSON.stringify(data),
-        data: data,
+        // body: JSON.stringify(data),
+        data: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
         },
       });
       console.log(response);
-      const data = await response.json();
-      console.log(data);
+
+      //if successful POST, nav to homepage
+      if (response.status === 201 || 200){
+          router.push('/')
+      }
+
     } catch (err) {
       console.log(err);
     }
