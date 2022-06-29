@@ -9,7 +9,7 @@ function MeetupItem(props) {
     const handleShowDetails = () => {
         // console.log(router);
         // console.log(props.id);
-        //router.push - pushes additional params onto our current url 
+        // router.push - pushes additional params onto our current url 
         // ourdomain.com, router.push(`/meetups/${props.id}`) => ourdomain.com/meetups/${id}
         router.push(`/${props.id}`);
     }

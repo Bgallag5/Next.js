@@ -5,8 +5,6 @@
 import { MongoClient } from "mongodb";
 
 const handler = async (req, res) => {
-    console.log('REQ.BODY');
-  console.log(req.body);
 
   if (req.method === "POST") {
     const data = req.body;
@@ -16,7 +14,6 @@ const handler = async (req, res) => {
       const MONGODB_URI =
         "mongodb+srv://Ben:JqTTk0PPTtTkIPHp@cluster0.wp6ebn8.mongodb.net/?retryWrites=true&w=majority";
       const client = await MongoClient.connect(MONGODB_URI);
-      console.log(client);
       const db = client.db();
       const meetupsCollection = db.collection("meetups");
       const result = await meetupsCollection.insertOne(data);

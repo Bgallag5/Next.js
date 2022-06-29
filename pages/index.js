@@ -1,36 +1,42 @@
 import React from "react";
 import MeetupList from "../components/meetups/MeetupList";
+import {MongoClient} from 'mongodb';
+import Head from 'next/head';
 
-export const dummyData = [
-  {
-    id: "1",
-    image:
-      "https://www.esl-languages.com/sites/default/files/styles/image_gallery/public/city/gallery/esl-vienna-language-stay-hero.jpg?itok=B_R79XbR",
-    address: "2532 West St. Vienna",
-    title: "Vienna Walk",
-  },
-  {
-    id: "2",
-    image:
-      "https://www.investmentmonitor.ai/wp-content/uploads/sites/7/2021/10/Warsaw-skyline-2-934x657-1.jpg",
-    address: "1111 East St. Warsaw",
-    title: "Warsaw Walk",
-  },
-];
 export default function HomePage(props) {
-    console.log(props.meetups);
   return (
     <div className="">
+      <Head>
+        <title>Meetups</title>
+        <meta name="description" content="Find local hiking meetups" />
+      </Head>
       <MeetupList meetups={props.meetups} />
     </div>
   );
 }
 
-export async function getStaticProps () {
-    return {
-        props: {
-            meetups: dummyData
-        },
-        revalidate: 10
-    }
+//set props on load
+// on load, fetch our database collection and set our props.meetups to the meetups
+// NONE of the code in getStaticProps() will be exposed to the client side - can write credentials and keys in this function
+export async function getStaticProps() {
+  const MONGODB_URI =
+    "mongodb+srv://Ben:JqTTk0PPTtTkIPHp@cluster0.wp6ebn8.mongodb.net/?retryWrites=true&w=majority";
+  const client = await MongoClient.connect(MONGODB_URI);
+  const db = client.db();
+  const meetupsCollection = db.collection("meetups");
+  const meetups = await meetupsCollection.find().toArray();
+  client.close();
+
+  return {
+    props: {
+      meetups: meetups.map(meetup => ({
+        title: meetup.title,
+        address: meetup.address,
+        image: meetup.image,
+        description: meetup.description,
+        id: meetup._id.toString()
+      }))
+    },
+    revalidate: 1,
+  };
 }

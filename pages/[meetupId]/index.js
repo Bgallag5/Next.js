@@ -1,45 +1,46 @@
-import React from 'react';
-import MeetupDetails from '../../components/meetups/MeetupDetails';
+import React from "react";
+import MeetupDetails from "../../components/meetups/MeetupDetails";
+import { MongoClient, ObjectId } from "mongodb";
 
 export default function index(props) {
-console.log(props);
+  const chosenMeetup = JSON.parse(props.chosenMeetup);
+  console.log(chosenMeetup);
 
-  return (
-    <MeetupDetails props={props} />
-  )
+  return <MeetupDetails chosenMeetup={chosenMeetup} />;
 }
 
-export async function getStaticPaths(){
+export async function getStaticPaths() {
+  const MONGODB_URI =
+    "mongodb+srv://Ben:JqTTk0PPTtTkIPHp@cluster0.wp6ebn8.mongodb.net/?retryWrites=true&w=majority";
+  const client = await MongoClient.connect(MONGODB_URI);
+  const db = client.db();
+  const meetupsCollection = db.collection("meetups");
+  //fetch all document objects but only include the _id of each item
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+  // console.log(meetups);
+
   return {
     fallback: false,
-    paths: [
-      {
-        params: {
-          meetupId: "1"
-        }
-      },
-      {
-        params: {
-          meetupId: "2"
-        }
-      },
-    ]
-  }
+    paths: meetups.map((meetup) => ({
+      params: { meetupId: meetup._id.toString() },
+    })),
+  };
 }
 
 export async function getStaticProps(context) {
-    //API fetch for single meetup data
+  //API fetch for single meetup data
+  const meetupId = context.params.meetupId;
+  // console.log(meetupId);
+  const MONGODB_URI =
+    "mongodb+srv://Ben:JqTTk0PPTtTkIPHp@cluster0.wp6ebn8.mongodb.net/?retryWrites=true&w=majority";
+  const client = await MongoClient.connect(MONGODB_URI);
+  const db = client.db();
+  const meetupsCollection = db.collection("meetups");
+  const selectedMeetup = await meetupsCollection.findOne({_id: ObjectId(meetupId)});
 
-    console.log(context);
-    return {
-        props: {
-          chosenMeetup: {
-            id: "1",
-            image:
-              "https://www.esl-languages.com/sites/default/files/styles/image_gallery/public/city/gallery/esl-vienna-language-stay-hero.jpg?itok=B_R79XbR",
-            address: "2532 West St. Vienna",
-            title: "Vienna Walk",
-          }  
-        }
-    }
+  return {
+    props: {
+      chosenMeetup: JSON.stringify(selectedMeetup),
+    },
+  };
 }
